@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Процеси </title>
+</head>
+<body>
+    <div id = "container">
+        <p><%=oid%> </p>
+    <% for(var i=0; i<processes.length; i++) { %>
+        <div class="elment">
+            <p id="p2">
+                Date : <%= processes[i].date.getDate() %>:<%= processes[i].date.getMonth() %>:<%= processes[i].date.getFullYear() %> 
+                <%= processes[i].date.getHours() %>:<%= processes[i].date.getMinutes() %>:<%= processes[i].date.getSeconds() %>
+            </p>
+            <p>Time : <%= processes[i].time %> </p>
+            <p>Progress : <%= processes[i].progress %> </p>
+            <p>Status : <%= processes[i].status %> </p>
+        </div>
+    <% } %>
+    <a href='killall'> Перервати всі процеси </a>
+</div>
+<script src="/socket.io/socket.io.js"></script>  
+<script>  
+    var sid = 'asas'; //<%=oid%>;
+    var socket = io.connect('/');
+    socket.on('changed',function(ps){
+         var node = document.getElementById("container");
+            node.innerHTML="";
+        
+            var text = document.createTextNode(sid);
+            var pe = document.createElement('p');
+            pe.appendChild(text);
+          
+            node.appendChild(pe);
+            var element = document.createElement('div');
+            for(var i=0;i<ps.length ;++i){
+                var d = new Date(ps[i].date);
+                var dt = d.getDate() + ':' + d.getMonth() + ':' + d.getYear() + ' ' +d.getHours() + ':' + d.getMinutes() + ':' +d.getSeconds();
+                var ptext =document.createTextNode( 'Date : ' + dt);
+                var pelement = document.createElement('p');
+                pelement.appendChild(ptext);
+                element.appendChild(pelement);
+
+                ptext =document.createTextNode( 'Time : ' + ps[i].time);
+                var pelement = document.createElement('p');
+                pelement.appendChild(ptext);
+                element.appendChild(pelement);
+
+                ptext =document.createTextNode('Progress : ' + ps[i].progress);
+                var pelement = document.createElement('p');
+                pelement.appendChild(ptext);
+                element.appendChild(pelement);
+
+                ptext =document.createTextNode('Status : ' + ps[i].status);
+                var pelement = document.createElement('p');
+                pelement.appendChild(ptext);
+                element.appendChild(pelement);
+            }
+            var htext = document.createTextNode('Перервати всі процеси');
+            var hyper = document.createElement('a');
+            hyper.appendChild(htext);
+            hyper.setAttribute('href','killall');
+            node.appendChild(element);
+            node.appendChild(hyper);
+    })
+</script> 
+</body>
+</html>
